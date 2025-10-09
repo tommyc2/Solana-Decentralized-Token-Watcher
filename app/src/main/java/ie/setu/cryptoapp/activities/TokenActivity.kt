@@ -6,12 +6,13 @@ import androidx.appcompat.app.AppCompatActivity
 import ie.setu.cryptoapp.databinding.ActivityMainBinding
 import ie.setu.cryptoapp.models.Token
 import mu.KotlinLogging
+import ie.setu.cryptoapp.main.MainApp
 
-class MainActivity : AppCompatActivity() {
-    private val logger = KotlinLogging.logger {}
+class TokenActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private val logger = KotlinLogging.logger {}
 
-    var token = Token()
+    lateinit var app: MainApp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,14 +21,18 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        app = application as MainApp
+
         // Add token button
         binding.btnAdd.setOnClickListener {
-            token.name = binding.tokenName.text.toString()
-            token.contractAddress = binding.tokenName.text.toString()
+            val name = binding.tokenName.text.toString()
+            val contractAddress = binding.tokenName.text.toString()
 
-            if (token.name.isNotEmpty() && token.contractAddress.isNotEmpty()) {
-                logger.info { "Token added: $token.name" }
-                logger.info { "Token added: $token.contractAddress" }
+            if (name.isNotEmpty() && contractAddress.isNotEmpty()) {
+                app.tokens.add(Token(name, contractAddress).copy())
+                logger.info { "Token added: $name" }
+                logger.info { "Token added: $contractAddress" }
+                logger.info { "Token obj: ${app.tokens}"}
             }
         }
     }
