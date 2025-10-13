@@ -26,13 +26,16 @@ class TokenActivity : AppCompatActivity() {
         // Add token button
         binding.btnAdd.setOnClickListener {
             val name = binding.tokenName.text.toString()
-            val contractAddress = binding.tokenName.text.toString()
+            val contractAddress = binding.contractAddress.text.toString()
 
             if (name.isNotEmpty() && contractAddress.isNotEmpty()) {
                 app.tokens.add(Token(name, contractAddress).copy())
                 logger.info { "Token added: $name" }
                 logger.info { "Token added: $contractAddress" }
                 logger.info { "Token obj: ${app.tokens}"}
+
+                setResult(RESULT_OK)
+                finish() // finish activity after adding token
             }
         }
     }
