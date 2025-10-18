@@ -50,5 +50,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation("org.slf4j:slf4j-simple:2.0.17")
     implementation ("io.github.microutils:kotlin-logging:3.0.5")
-
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
 }
