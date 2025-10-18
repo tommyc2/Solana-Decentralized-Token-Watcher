@@ -6,12 +6,12 @@ import mu.KotlinLogging
 
 class MainApp : Application() {
 
+    private val logger = KotlinLogging.logger {}
+
     val tokens = ArrayList<Token>();
 
     override fun onCreate() {
         super.onCreate()
-        tokens.add(Token("BTC", "fgawhfdwuihfauwhi"))
-        tokens.add(Token("ETH", "fgawhfdwuihfauwhi"))
-        tokens.add(Token("XCN", "fgawhfdwuihfauwhi"))
+        logger.info("App started")
     }
 }

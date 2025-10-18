@@ -9,7 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="111dp"
         android:padding="16dp">
 
         <TextView
@@ -26,6 +26,14 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tokenName"
             tools:text="A Contract Address" />
+
+        <TextView
+            android:id="@+id/marketCap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tokenName"
+            android:layout_marginTop="23dp"
+            tools:text="Market Cap" />
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

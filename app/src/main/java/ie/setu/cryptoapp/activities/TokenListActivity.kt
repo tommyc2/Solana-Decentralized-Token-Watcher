@@ -61,8 +61,7 @@ class TokenListActivity : AppCompatActivity() {
             ActivityResultContracts.StartActivityForResult()
         ) {
             if (it.resultCode == Activity.RESULT_OK) {
-                (binding.recyclerView.adapter)?.
-                notifyItemRangeChanged(0,app.tokens.size)
+                (binding.recyclerView.adapter)?.notifyItemInserted(app.tokens.size - 1)
             }
         }
 }
@@ -90,6 +89,7 @@ class TokenAdapter constructor(private var tokens: List<Token>) :
         fun bind(token: Token) {
             binding.tokenName.text = token.name
             binding.contractAddress.text = token.contractAddress
+            binding.marketCap.text = token.marketCap.toString()
         }
     }
 }

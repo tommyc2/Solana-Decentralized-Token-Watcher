@@ -1,11 +1,14 @@
 package ie.setu.cryptoapp.api
 
+import android.widget.Toast
 import ie.setu.cryptoapp.models.Token
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.json.JSONArray
+import org.json.JSONObject
 
 object API {
 
@@ -14,21 +17,44 @@ object API {
     val client = OkHttpClient()
     val logger = KotlinLogging.logger {  }
 
-    fun solanaTokenExists(ca: String): Boolean {
-        return true
-    }
-
-    suspend fun getTokenData(ca: String): String = withContext(Dispatchers.IO){
+    suspend fun solanaTokenExists(ca: String): Boolean = withContext(Dispatchers.IO) {
         val request = Request.Builder()
             .url("$URL/$ca")
             .build()
 
         client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) throw Exception("Unexpected code $response")
+            if (response.code == 404) {
+                logger.info { "Token not found: $ca" }
+                return@withContext false
+            }
 
-            val response = response.body?.string()
-            logger.info("Response: $response")
-            return@withContext response as String
+            if (!response.isSuccessful) {
+                logger.warn { "Unexpected response code: ${response.code}" }
+                return@withContext false
+            }
+
+            return@withContext true
+        }
+    }
+
+    suspend fun getTokenData(ca: String): JSONArray = withContext(Dispatchers.IO){
+        val request = Request.Builder()
+            .url("$URL/$ca")
+            .build()
+
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) {
+                logger.warn { "Unexpected response code: ${response.code}" }
+            }
+
+            if (response.code == 404) {
+                logger.warn { "Token address does not exist: $ca" }
+                return@withContext JSONArray()
+            }
+
+            val responseBody = response.body?.string()
+            logger.info { "Fetched token JSON: $responseBody" }
+            return@withContext JSONArray(responseBody)
         }
     }
 }

@@ -3,5 +3,6 @@
     <string name="button_add_token">Add Token</string>
     <string name="hint_token_name">Token Name</string>
     <string name="hint_contract_address">Contract Address</string>
+    <string name="hint_marketCap">Market Cap</string>
     <string name="menu_addToken">Add</string>
 </resources>
