@@ -37,7 +37,7 @@ class TokenListActivity : AppCompatActivity() {
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.adapter = TokenAdapter(app.tokens)
 
-        binding.toolbar.title = "My Watchlist"
+        binding.toolbar.title = "My Token Watchlist"
         setSupportActionBar(binding.toolbar)
     }
 
@@ -51,6 +51,10 @@ class TokenListActivity : AppCompatActivity() {
             R.id.item_add -> {
                 val launcherIntent = Intent(this, TokenActivity::class.java)
                 getResult.launch(launcherIntent)
+            }
+            R.id.item_refresh -> {
+                // todo: refresh token data on UI
+
             }
         }
         return super.onOptionsItemSelected(item)
