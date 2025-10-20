@@ -5,4 +5,6 @@
     <string name="hint_contract_address">Contract Address</string>
     <string name="hint_marketCap">Market Cap</string>
     <string name="menu_addToken">Add</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="delete_token">Delete token</string>
 </resources>
