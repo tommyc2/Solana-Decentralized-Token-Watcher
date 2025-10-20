@@ -1,27 +1,23 @@
 package ie.setu.cryptoapp.activities
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ie.setu.cryptoapp.R
-import ie.setu.cryptoapp.databinding.ActivityMainBinding
 import ie.setu.cryptoapp.databinding.ActivityTokenListBinding
 import ie.setu.cryptoapp.databinding.CardTokenBinding
 import ie.setu.cryptoapp.main.MainApp
 import ie.setu.cryptoapp.models.Token
+import mu.KotlinLogging
 
+private val logger = KotlinLogging.logger {}
 class TokenListActivity : AppCompatActivity() {
     lateinit var app: MainApp
     private lateinit var binding: ActivityTokenListBinding
@@ -64,13 +60,13 @@ class TokenListActivity : AppCompatActivity() {
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) {
-            if (it.resultCode == Activity.RESULT_OK) {
+            if (it.resultCode == RESULT_OK) {
                 (binding.recyclerView.adapter)?.notifyItemInserted(app.tokens.size - 1)
             }
         }
 }
 
-class TokenAdapter constructor(private var tokens: List<Token>) :
+class TokenAdapter constructor(private var tokens: MutableList<Token>) :
     RecyclerView.Adapter<TokenAdapter.MainHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
@@ -83,6 +79,16 @@ class TokenAdapter constructor(private var tokens: List<Token>) :
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val token = tokens[holder.adapterPosition]
         holder.bind(token)
+        // Set delete event listener (passing in lambda to function)
+        holder.setDeleteListener {
+            val pos = holder.adapterPosition
+            if (pos != RecyclerView.NO_POSITION) {
+                tokens.removeAt(pos)
+                notifyItemRemoved(pos)
+                logger.info { "Token removed at position $pos" }
+                logger.info { tokens.toString() }
+            }
+        }
     }
 
     override fun getItemCount(): Int = tokens.size
@@ -94,6 +100,12 @@ class TokenAdapter constructor(private var tokens: List<Token>) :
             binding.tokenName.text = token.name
             binding.contractAddress.text = token.contractAddress
             binding.marketCap.text = token.marketCap.toString()
+        }
+
+        fun setDeleteListener(onDelete: () -> Unit) {
+            binding.deleteButton.setOnClickListener {
+                onDelete()
+            }
         }
     }
 }
