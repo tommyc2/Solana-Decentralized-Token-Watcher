@@ -34,6 +34,8 @@ class TokenActivity : AppCompatActivity() {
             val contractAddress = binding.contractAddress.text.toString()
 
             if (alias.isNotEmpty() && contractAddress.isNotEmpty() && Utility.isValidAlias(alias)) {
+
+                // coroutine & API call to get token data
                 lifecycleScope.launch {
                     try {
                         val token = API.getTokenData(contractAddress)
@@ -42,6 +44,12 @@ class TokenActivity : AppCompatActivity() {
                         }
                         val foundToken: Token = convertJSONToTokenObject(token, alias)
                         app.tokens.add(foundToken)
+                        // Save tokens to JSOn file after adding (internal device storage)
+                        try {
+                            Utility.writeTokens(applicationContext, app.tokens)
+                        } catch (_: Exception) {
+                            logger.error("Error occured")
+                        }
 
                         logger.info("Token added: ${app.tokens.get(app.tokens.size-1).name}, ${app.tokens.get(app.tokens.size-1).contractAddress}, ${app.tokens.get(app.tokens.size-1).marketCap}")
                         setResult(RESULT_OK)

@@ -18,6 +18,9 @@ object API {
     val logger = KotlinLogging.logger {  }
 
     suspend fun solanaTokenExists(ca: String): Boolean = withContext(Dispatchers.IO) {
+
+        // pulled from okhttp docs (boilerplate code)
+
         val request = Request.Builder()
             .url("$URL/$ca")
             .build()

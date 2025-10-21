@@ -15,6 +15,7 @@ import ie.setu.cryptoapp.databinding.ActivityTokenListBinding
 import ie.setu.cryptoapp.databinding.CardTokenBinding
 import ie.setu.cryptoapp.main.MainApp
 import ie.setu.cryptoapp.models.Token
+import ie.setu.cryptoapp.utils.Utility
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -66,7 +67,7 @@ class TokenListActivity : AppCompatActivity() {
         }
 }
 
-class TokenAdapter constructor(private var tokens: MutableList<Token>) :
+class TokenAdapter constructor(private var tokens: ArrayList<Token>) :
     RecyclerView.Adapter<TokenAdapter.MainHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
@@ -87,6 +88,13 @@ class TokenAdapter constructor(private var tokens: MutableList<Token>) :
                 notifyItemRemoved(pos)
                 logger.info { "Token removed at position $pos" }
                 logger.info { tokens.toString() }
+
+                try {
+                    Utility.writeTokens(holder.itemView.context.applicationContext, tokens)
+                }
+                catch (_: Exception) {
+                    logger.error("Failed to write tokens after deletion")
+                }
             }
         }
     }
