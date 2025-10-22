@@ -1,7 +1,7 @@
 # Solana Decentralized Token Watcher
 A Kotlin based mobile app for analysing solana DEX tokens on the solana blockchain
 
-![img.png](mainactivity.png)
+<img width="353" height="758" alt="Screenshot from 2025-10-22 11-58-05" src="https://github.com/user-attachments/assets/d532730e-01f3-4fbb-a72a-f9e4bb65e4ef" />
 
 # Features
 - Monitor Solana DEX tokens in real-time
