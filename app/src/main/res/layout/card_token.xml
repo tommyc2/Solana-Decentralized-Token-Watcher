@@ -36,6 +36,18 @@
             tools:text="Market Cap" />
 
         <ImageButton
+            android:id="@+id/updateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/deleteButton"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/update_token"
+            android:src="@android:drawable/ic_menu_edit"
+            app:tint="#2196F3" />
+
+        <ImageButton
             android:id="@+id/deleteButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
