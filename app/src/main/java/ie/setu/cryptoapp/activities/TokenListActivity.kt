@@ -32,9 +32,14 @@ class TokenListActivity : AppCompatActivity() {
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = TokenAdapter(app.tokens)
+        binding.recyclerView.adapter = TokenAdapter(app.tokens) { position ->
 
-        binding.toolbar.title = "My Token Watchlist"
+            val launcherIntent = Intent(this, UpdateTokenActivity::class.java)
+            launcherIntent.putExtra("token_position", position)
+            getUpdateResult.launch(launcherIntent)
+        }
+
+        binding.toolbar.title = "Your Token Watchlist"
         setSupportActionBar(binding.toolbar)
     }
 
@@ -65,9 +70,18 @@ class TokenListActivity : AppCompatActivity() {
                 (binding.recyclerView.adapter)?.notifyItemInserted(app.tokens.size - 1)
             }
         }
+
+    private val getUpdateResult =
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == RESULT_OK) {
+                binding.recyclerView.adapter?.notifyDataSetChanged()
+            }
+        }
 }
 
-class TokenAdapter constructor(private var tokens: ArrayList<Token>) :
+class TokenAdapter constructor(private var tokens: ArrayList<Token>, private val onUpdateClick: (Int) -> Unit ) :
     RecyclerView.Adapter<TokenAdapter.MainHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
@@ -97,6 +111,13 @@ class TokenAdapter constructor(private var tokens: ArrayList<Token>) :
                 }
             }
         }
+
+        holder.setUpdateListener {
+            val pos = holder.adapterPosition
+            if (pos != RecyclerView.NO_POSITION) {
+                onUpdateClick(pos)
+            }
+        }
     }
 
     override fun getItemCount(): Int = tokens.size
@@ -113,6 +134,12 @@ class TokenAdapter constructor(private var tokens: ArrayList<Token>) :
         fun setDeleteListener(onDelete: () -> Unit) {
             binding.deleteButton.setOnClickListener {
                 onDelete()
+            }
+        }
+
+        fun setUpdateListener(onUpdate: () -> Unit) {
+            binding.updateButton.setOnClickListener {
+                onUpdate()
             }
         }
     }
