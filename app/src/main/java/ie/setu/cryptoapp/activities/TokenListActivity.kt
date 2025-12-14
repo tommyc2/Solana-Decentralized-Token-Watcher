@@ -107,6 +107,15 @@ class TokenListActivity : AppCompatActivity() {
                     logger.error { "Failed to refresh token ${app.tokens[i].name}: $e" }
                 }
             }
+
+            // Save updated market caps
+            try {
+                Utility.writeTokens(applicationContext, app.tokens)
+                logger.info("Tokens saved to internal storage")
+            } catch (error: Exception) {
+                logger.error("Failed to save tokens: $error")
+            }
+
             Toast.makeText(this@TokenListActivity, "Refreshed items!", Toast.LENGTH_SHORT).show()
         }
     }

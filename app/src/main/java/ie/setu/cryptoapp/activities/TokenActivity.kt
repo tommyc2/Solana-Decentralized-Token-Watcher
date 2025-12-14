@@ -44,7 +44,7 @@ class TokenActivity : AppCompatActivity() {
                         }
                         val foundToken: Token = convertJSONToTokenObject(token, alias)
                         app.tokens.add(foundToken)
-                        // Save tokens to JSOn file after adding (internal device storage)
+                        // Save tokens to JSON file after adding (internal device storage)
                         try {
                             Utility.writeTokens(applicationContext, app.tokens)
                         } catch (_: Exception) {
