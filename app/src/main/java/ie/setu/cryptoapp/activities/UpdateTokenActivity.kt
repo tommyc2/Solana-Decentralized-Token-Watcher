@@ -32,7 +32,7 @@ class UpdateTokenActivity : AppCompatActivity() {
 
             binding.tokenName.setText(token.name)
             binding.contractAddress.setText(token.contractAddress)
-            binding.marketCap.setText(token.marketCap.toString())
+            binding.marketCap.setText(Utility.formatMarketCap(token.marketCap))
         }
 
         binding.toolbarUpdate.title = "Update Token"
@@ -65,4 +65,3 @@ class UpdateTokenActivity : AppCompatActivity() {
         }
     }
 }
-

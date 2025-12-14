@@ -186,7 +186,7 @@ class TokenAdapter constructor(private var tokens: ArrayList<Token>, private val
         fun bind(token: Token) {
             binding.tokenName.text = token.name
             binding.contractAddress.text = token.contractAddress
-            binding.marketCap.text = token.marketCap.toString()
+            binding.marketCap.text = Utility.formatMarketCap(token.marketCap)
         }
 
         fun setDeleteListener(onDelete: () -> Unit) {

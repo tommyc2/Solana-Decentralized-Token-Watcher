@@ -5,12 +5,14 @@ import ie.setu.cryptoapp.models.Token
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.FileNotFoundException
+import java.util.Locale
 import mu.KotlinLogging
 
 object Utility {
 
     private val logger = KotlinLogging.logger {}
     private val TOKENS_FILE = "tokens.json"
+
     fun isValidAlias(alias: String): Boolean {
         return alias.isNotEmpty() && alias.length <= 10
     }
@@ -59,4 +61,34 @@ object Utility {
         }
         return tokens
     }
+
+    fun formatMarketCap(marketCap: Double?): String {
+        if (marketCap == null || marketCap.isNaN() || marketCap.isInfinite()) {
+            return "No market cap available"
+        }
+
+        return when {
+            marketCap >= 1_000_000_000_000 -> {
+                val value = marketCap / 1_000_000_000_000
+                "Market Cap: $${String.format(Locale.US, "%.1f", value)}T"
+            }
+            marketCap >= 1_000_000_000 -> {
+                val value = marketCap / 1_000_000_000
+                "Market Cap: $${String.format(Locale.US, "%.1f", value)}B"
+            }
+            marketCap >= 1000000 -> {
+                val value = marketCap / 1000000
+                "Market Cap: $${String.format(Locale.US, "%.1f", value)}M"
+            }
+            marketCap >= 1000 -> {
+                val value = marketCap / 1000
+                "Market Cap: $${String.format(Locale.US, "%.1f", value)}K"
+            }
+            marketCap >= 0 -> {
+                "Market Cap: $${String.format(Locale.US, "%.2f", marketCap)}"
+            }
+            else -> "No market cap available"
+        }
+    }
+
 }
