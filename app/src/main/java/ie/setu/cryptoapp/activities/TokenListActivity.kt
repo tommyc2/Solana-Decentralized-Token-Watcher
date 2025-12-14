@@ -41,6 +41,26 @@ class TokenListActivity : AppCompatActivity() {
 
         binding.toolbar.title = "Your Token Watchlist"
         setSupportActionBar(binding.toolbar)
+
+        setupBottomNavigation()
+    }
+
+    private fun setupBottomNavigation() {
+        binding.bottomNav.selectedItemId = R.id.nav_tokens
+
+        binding.bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_tokens -> true
+                R.id.nav_settings -> {
+                    val intent = Intent(this, UserSettingsActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    startActivity(intent)
+                    finish()
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
