@@ -28,5 +28,9 @@
             android:name=".activities.UpdateTokenActivity"
             android:exported="true">
         </activity>
+        <activity
+            android:name=".activities.UserSettingsActivity"
+            android:exported="true">
+        </activity>
     </application>
 </manifest>
