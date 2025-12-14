@@ -6,16 +6,20 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ie.setu.cryptoapp.R
+import ie.setu.cryptoapp.api.API
 import ie.setu.cryptoapp.databinding.ActivityTokenListBinding
 import ie.setu.cryptoapp.databinding.CardTokenBinding
 import ie.setu.cryptoapp.main.MainApp
 import ie.setu.cryptoapp.models.Token
 import ie.setu.cryptoapp.utils.Utility
+import kotlinx.coroutines.launch
 import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
@@ -38,11 +42,11 @@ class TokenListActivity : AppCompatActivity() {
             launcherIntent.putExtra("token_position", position)
             getUpdateResult.launch(launcherIntent)
         }
-
         binding.toolbar.title = "Your Token Watchlist"
         setSupportActionBar(binding.toolbar)
 
-        setupBottomNavigation()
+        setupBottomNavigation() // Setup bottom navigation
+        refreshTokenMarketCaps() // Refresh market caps on startup
     }
 
     private fun setupBottomNavigation() {
@@ -75,11 +79,45 @@ class TokenListActivity : AppCompatActivity() {
                 getResult.launch(launcherIntent)
             }
             R.id.item_refresh -> {
-                // todo: refresh token data on UI
-
+                refreshTokenMarketCaps()
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun refreshTokenMarketCaps() {
+        if (app.tokens.isEmpty()) {
+            Toast.makeText(this, "No tokens to refresh. Please add some", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        Toast.makeText(this, "Refreshing token prices...", Toast.LENGTH_SHORT).show()
+
+        lifecycleScope.launch {
+            for (i in app.tokens.indices) {
+                try {
+                    val tokenData = API.getTokenData(app.tokens[i].contractAddress)
+                    if (tokenData.length() > 0) {
+                        val newMarketCap = tokenData.getJSONObject(0).getDouble("fdv")
+                        app.tokens[i].marketCap = newMarketCap
+                        binding.recyclerView.adapter?.notifyItemChanged(i)
+                        logger.info { "Updated market cap for ${app.tokens[i].name}: $newMarketCap" }
+                    }
+                } catch (e: Exception) {
+                    logger.error { "Failed to refresh token ${app.tokens[i].name}: $e" }
+                }
+            }
+
+            // Save updated market caps
+            try {
+                Utility.writeTokens(applicationContext, app.tokens)
+                logger.info("Tokens saved to internal storage")
+            } catch (error: Exception) {
+                logger.error("Failed to save tokens: $error")
+            }
+
+            Toast.makeText(this@TokenListActivity, "Refreshed items!", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private val getResult =
@@ -148,7 +186,7 @@ class TokenAdapter constructor(private var tokens: ArrayList<Token>, private val
         fun bind(token: Token) {
             binding.tokenName.text = token.name
             binding.contractAddress.text = token.contractAddress
-            binding.marketCap.text = token.marketCap.toString()
+            binding.marketCap.text = Utility.formatMarketCap(token.marketCap)
         }
 
         fun setDeleteListener(onDelete: () -> Unit) {
