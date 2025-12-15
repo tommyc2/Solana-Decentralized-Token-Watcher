@@ -1,13 +1,17 @@
 # Solana Decentralized Token Watcher
 A Kotlin based mobile app for analysing solana DEX tokens on the solana blockchain
 
-<img width="353" height="758" alt="Screenshot from 2025-10-22 11-58-05" src="https://github.com/user-attachments/assets/d532730e-01f3-4fbb-a72a-f9e4bb65e4ef" />
+<img width="343" height="728" alt="image" src="https://github.com/user-attachments/assets/f9e7e95e-429b-4223-b4ae-056f0b0da428" />
 
 # Features
 - Monitor Solana DEX tokens in real-time
 - Analyze token performance
 - User-friendly interface for easy navigation
-- Add/Delete tokens to and from watchlist
+- Add/Update/Delete tokens to and from watchlist
+- Night Mode
+- Create aliases for tokens
+- Automatic & Manual refresh
+- Data Validation
 
 # Installation
 1. Install any necessary dependencies
