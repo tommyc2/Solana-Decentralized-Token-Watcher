@@ -21,9 +21,15 @@ This project was created with the assistance of AI tools like CoPilot to help ge
 
 AI was used for the following tasks:
 
+### Assignment 1:
 1. Coroutine implementation assistance (lifecycleScope + Dispatcher.IO skeleton code)
 2. Implementing internal storage persistence (using openFileInput and openFileOutput)
 3. General code optimization and best practices (lambdas, try/catch blocks, etc.)
 
 I used lifecycle coroutines as the web API call was blocking the UI, so it made sense to move it to a background thread.
 I also wanted to implement internal storage persistence instead of external persistence as it made more sense for my app.
+
+### Assignment 2:
+1. Night mode switch function (event listener for setupNightModeSwitch in UserSettingsActivity) + how to use AppCompatDelegate --> https://developer.android.com/reference/androidx/appcompat/app/AppCompatDelegate
+2. Structure for User Settings activity
+3. Code optimization & kotlin specific techniques e.g early returns in event listeners (return@), underscore usage for unused variables
