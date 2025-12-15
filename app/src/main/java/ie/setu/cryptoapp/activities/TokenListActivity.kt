@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -156,16 +157,14 @@ class TokenAdapter constructor(private var tokens: ArrayList<Token>, private val
         holder.setDeleteListener {
             val pos = holder.adapterPosition
             if (pos != RecyclerView.NO_POSITION) {
-                tokens.removeAt(pos)
-                notifyItemRemoved(pos)
-                logger.info { "Token removed at position $pos" }
-                logger.info { tokens.toString() }
+                val tokenToDelete = tokens[pos]
 
-                try {
-                    Utility.writeTokens(holder.itemView.context.applicationContext, tokens)
+                if (isTokenValid(tokenToDelete)) {
+                    showDeleteConfirmationDialog(holder, pos, tokenToDelete)
                 }
-                catch (_: Exception) {
-                    logger.error("Failed to write tokens after deletion")
+                else {
+                    Toast.makeText(holder.itemView.context, "Could not delete token. Invalid token data", Toast.LENGTH_SHORT).show()
+                    logger.error { "Attempted to delete invalid token at position $pos" }
                 }
             }
         }
@@ -175,6 +174,34 @@ class TokenAdapter constructor(private var tokens: ArrayList<Token>, private val
             if (pos != RecyclerView.NO_POSITION) {
                 onUpdateClick(pos)
             }
+        }
+    }
+    private fun isTokenValid(token: Token): Boolean {
+        return token.name.isNotBlank() && token.contractAddress.isNotBlank()
+    }
+    private fun showDeleteConfirmationDialog(holder: MainHolder, position: Int, token: Token) {
+        val context = holder.itemView.context
+
+        AlertDialog.Builder(context)
+            .setTitle("Delete Token")
+            .setMessage("Are you sure you want to delete ${token.name}?")
+            .setPositiveButton("Delete") { _, _ ->
+                // deleting token here
+                deleteToken(holder, position)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+    private fun deleteToken(holder: MainHolder, position: Int) {
+        tokens.removeAt(position)
+        notifyItemRemoved(position)
+        logger.info { "Token removed at position $position" }
+        logger.info { tokens.toString() }
+
+        try {
+            Utility.writeTokens(holder.itemView.context.applicationContext, tokens)
+        } catch (_: Exception) {
+            logger.error("Failed to write tokens after deletion")
         }
     }
 
