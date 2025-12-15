@@ -1,6 +1,7 @@
 package ie.setu.cryptoapp.activities
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -33,15 +34,34 @@ class TokenActivity : AppCompatActivity() {
             val alias = binding.tokenName.text.toString()
             val contractAddress = binding.contractAddress.text.toString()
 
+            if (alias.isEmpty()) {
+                Toast.makeText(this, "Please enter a token name", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (contractAddress.isEmpty()) {
+                Toast.makeText(this, "Please enter a contract address", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (!Utility.isValidAlias(alias)) {
+                Toast.makeText(this, "Token name must be 10 characters or less", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             if (alias.isNotEmpty() && contractAddress.isNotEmpty() && Utility.isValidAlias(alias)) {
 
                 // coroutine & API call to get token data
                 lifecycleScope.launch {
                     try {
                         val token = API.getTokenData(contractAddress)
-                        if (token.toString() == JSONArray().toString()) {
-                            logger.info("Token not found: 404 error")
+
+                        // Handle invalid token address
+                        if (token.length() == 0) {
+                            Toast.makeText(this@TokenActivity, "Invalid token address", Toast.LENGTH_SHORT).show()
+                            return@launch
                         }
+
                         val foundToken: Token = convertJSONToTokenObject(token, alias)
                         app.tokens.add(foundToken)
                         // Save tokens to JSON file after adding (internal device storage)
@@ -55,7 +75,8 @@ class TokenActivity : AppCompatActivity() {
                         setResult(RESULT_OK)
                         finish() // finish activity after adding token
                     } catch (e: Exception) {
-                        logger.info("Error: $e")
+                        Toast.makeText(this@TokenActivity, "Invalid token address", Toast.LENGTH_SHORT).show()
+                        logger.info("Error: invalid token address: $e")
                     }
                 }
             }

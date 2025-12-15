@@ -1,6 +1,7 @@
 package ie.setu.cryptoapp.activities
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import ie.setu.cryptoapp.databinding.ActivityUpdateTokenBinding
@@ -42,8 +43,17 @@ class UpdateTokenActivity : AppCompatActivity() {
         binding.btnSave.setOnClickListener {
             val newName = binding.tokenName.text.toString()
 
-            if (newName.isNotEmpty() && tokenPosition != -1) {
+            if (newName.isEmpty()) {
+                Toast.makeText(this, "Please enter a token name", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
+            if (!Utility.isValidAlias(newName)) {
+                Toast.makeText(this, "Token name must be 10 characters or less", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (tokenPosition != -1) {
                 app.tokens[tokenPosition].name = newName
 
                 // Update token in internal storage
