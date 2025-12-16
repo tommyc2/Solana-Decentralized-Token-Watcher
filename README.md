@@ -34,6 +34,6 @@ I used lifecycle coroutines as the web API call was blocking the UI, so it made 
 I also wanted to implement internal storage persistence instead of external persistence as it made more sense for my app.
 
 ### Assignment 2:
-1. Night mode switch function (event listener for setupNightModeSwitch in UserSettingsActivity) + how to use AppCompatDelegate --> https://developer.android.com/reference/androidx/appcompat/app/AppCompatDelegate
-2. Structure for User Settings activity
-3. Code optimization & kotlin specific techniques e.g early returns in event listeners (return@), underscore usage for unused variables
+1. Night mode switch toggle + UserSettingsActivity provisional layout(event listener for setupNightModeSwitch in UserSettingsActivity) + how to use AppCompatDelegate --> Extra refs: https://developer.android.com/reference/androidx/appcompat/app/AppCompatDelegate
+   https://github.com/tommyc2/Solana-Decentralized-Token-Watcher/tree/main/AI-References
+2. Code optimization & kotlin specific techniques e.g early returns in event listeners (return@), underscore usage for unused variables
